@@ -1,8 +1,8 @@
 "use client"
 
-import { React, useState } from 'react'
+import { React, useState, Suspense } from 'react'
 import Image from 'next/image'
-import { Poppins, Ruslan_Display } from 'next/font/google'
+import { Poppins } from 'next/font/google'
 import Link from 'next/link';
 import { ToastContainer, toast } from 'react-toastify';
 import { useSearchParams } from 'next/navigation';
@@ -14,7 +14,7 @@ const poppins = Poppins({
 });
 
 
-const Generate = () => {
+const GenerateContent = () => {
 
     const [links, setLinks] = useState([{ link: "", linktext: "" }])
     const searchParams = useSearchParams()
@@ -56,7 +56,7 @@ const Generate = () => {
         };
 
 
-        const r = await fetch("http://localhost:3000/api/add", requestOptions)
+        const r = await fetch("/api/add", requestOptions)
         const result = await r.json()
         if (result.success) {
             toast.success(result.message)
@@ -119,7 +119,7 @@ const Generate = () => {
 
                     <input value={pic || ""} onChange={e => { setpic(e.target.value) }} className='bg-[#FFB3CC]  px-4 w-120 h-12 rounded-xl py-2 text-[#24121B] text-lg focus:outline-[#936709]' type="text" placeholder='Enter Public Link to your Picture' />
 
-                    <button disabled={pic == "" || handle == "" || links[0].linktext == ""} onClick={() => { submitLinks() }} className={`bg-[#24121B] w-2/3 self-center px-4 py-3 rounded-full text-lg cursor-pointer hover:bg-[#3A1728] ${poppins.className} shadow-black shadow-sm disabled:bg-[#3A1728] disabled:text-shadow-indigo-50`}>Create your BitTree</button>
+                    <button disabled={pic == "" || handle == "" || links[0]?.linktext == ""} onClick={() => { submitLinks() }} className={`bg-[#24121B] w-2/3 self-center px-4 py-3 rounded-full text-lg cursor-pointer hover:bg-[#3A1728] ${poppins.className} shadow-black shadow-sm disabled:bg-[#3A1728] disabled:text-shadow-indigo-50`}>Create your BitTree</button>
                 </div>
             </div>
             <div className="cols2 relative min-h-screen block ">
@@ -136,6 +136,14 @@ const Generate = () => {
             </div>
             <ToastContainer />
         </div>
+    )
+}
+
+const Generate = () => {
+    return (
+        <Suspense fallback={<div className="bg-[#FF0A7A] min-h-screen flex items-center justify-center text-white">Loading...</div>}>
+            <GenerateContent />
+        </Suspense>
     )
 }
 
