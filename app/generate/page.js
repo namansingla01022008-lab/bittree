@@ -56,16 +56,21 @@ const GenerateContent = () => {
         };
 
 
-        const r = await fetch("/api/add", requestOptions)
-        const result = await r.json()
-        if (result.success) {
-            toast.success(result.message)
-            setLinks([])
-            setpic("")
-            sethandle("")
-        }
-        else {
-            toast.error(result.message)
+        try {
+            const r = await fetch("/api/add", requestOptions)
+            const result = await r.json()
+            if (result.success) {
+                toast.success(result.message)
+                setLinks([])
+                setpic("")
+                sethandle("")
+            }
+            else {
+                toast.error(result.message || "Failed to create BitTree")
+            }
+        } catch (error) {
+            console.error("Submission error:", error)
+            toast.error("Failed to connect to server. Please try again.")
         }
 
     }
